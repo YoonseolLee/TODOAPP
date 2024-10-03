@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.to_docompose"
+    namespace = "com.example.todocompose"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.to_docompose"
+        applicationId = "com.example.todocompose"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -32,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -52,7 +52,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -69,20 +68,24 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // room
+    // Room
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
 
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // Dagger - Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.51")
+    kapt("com.google.dagger:hilt-android-compiler:2.51")
 
     // Compose Navigation
     val nav_version = "2.8.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+}
 
+kapt {
+    correctErrorTypes = true
 }
