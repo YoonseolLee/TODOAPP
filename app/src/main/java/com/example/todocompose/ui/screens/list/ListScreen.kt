@@ -16,6 +16,9 @@ fun ListScreen(
     navigateToTaskScreen: (Int) -> Unit
 ) {
     Scaffold(
+        topBar = {
+            ListAppBar()
+        },
         content = { paddingValues ->
             // 임시로 빈 Box를 넣어둡니다.
             Box(modifier = Modifier.padding(paddingValues)) {}
