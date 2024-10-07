@@ -1,5 +1,6 @@
 package com.example.todocompose.ui.screens.list
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -9,6 +10,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +24,16 @@ fun ListScreen(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
+    LaunchedEffect(key1 = true) {
+//        Log.d("ListScreen", "LaunchedEffect Triggered!")
+        sharedViewModel.getAllTasks()
+    }
+
+    val allTasks by sharedViewModel.allTasks.collectAsState()
+//    for(task in allTasks.value) {
+//        Log.d("ListScreen", task.title)
+//    }
+
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
@@ -33,8 +46,12 @@ fun ListScreen(
             )
         },
         content = { paddingValues ->
-            // 임시로 빈 Box를 넣어둡니다.
-            Box(modifier = Modifier.padding(paddingValues)) {}
+            Box(modifier = Modifier.padding(paddingValues)) {
+                ListContent(
+                    tasks = allTasks,
+                    navigateToTaskScreen = navigateToTaskScreen
+                )
+            }
         },
         floatingActionButton = {
             ListFab(navigateToTaskScreen = navigateToTaskScreen)
