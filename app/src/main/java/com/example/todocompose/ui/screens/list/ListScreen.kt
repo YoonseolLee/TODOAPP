@@ -1,6 +1,5 @@
 package com.example.todocompose.ui.screens.list
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,7 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.todocompose.ui.theme.fabBackgroundColor
 import com.example.todocompose.ui.viewmodels.SharedViewModel
 import com.example.todocompose.util.SearchAppBarState
@@ -25,14 +23,10 @@ fun ListScreen(
     sharedViewModel: SharedViewModel
 ) {
     LaunchedEffect(key1 = true) {
-//        Log.d("ListScreen", "LaunchedEffect Triggered!")
         sharedViewModel.getAllTasks()
     }
 
     val allTasks by sharedViewModel.allTasks.collectAsState()
-//    for(task in allTasks.value) {
-//        Log.d("ListScreen", task.title)
-//    }
 
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
