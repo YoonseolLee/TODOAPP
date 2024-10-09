@@ -5,17 +5,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.todocompose.util.Action
 
 @Composable
-fun TaskScreen() {
+fun TaskScreen(
+    navigateToListScreen: (Action) -> Unit
+) {
     Scaffold(
         topBar = {
-            TaskAppBar(navigateToListScreen = { /* Handle Action */ })
+            TaskAppBar(navigateToListScreen = navigateToListScreen)
         },
         content = { paddingValues ->
-            // paddingValues를 content에 전달합니다.
+
             Box(modifier = Modifier.padding(paddingValues)) {
-                // 실제 UI 요소를 이곳에 넣습니다.
             }
         }
     )
