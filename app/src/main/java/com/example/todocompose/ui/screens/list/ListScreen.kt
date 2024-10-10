@@ -8,14 +8,21 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.example.todocompose.ui.theme.fabBackgroundColor
 import com.example.todocompose.ui.viewmodels.SharedViewModel
+import com.example.todocompose.util.Action
 import com.example.todocompose.util.SearchAppBarState
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListScreen(
@@ -32,9 +39,17 @@ fun ListScreen(
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppBarState
     val searchTextState: String by sharedViewModel.searchTextState
 
-    sharedViewModel.handleDatabaseAction(action = action)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    DisplaySnackBar(
+        snackbarHostState = snackbarHostState,
+        handleDatabaseActions = { sharedViewModel.handleDatabaseAction(action = action) },
+        taskTitle = sharedViewModel.title.value,
+        action = action
+    )
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             ListAppBar(
                 sharedViewModel = sharedViewModel,
@@ -70,5 +85,27 @@ fun ListFab(
             imageVector = Icons.Filled.Add,
             contentDescription = "Add Button"
         )
+    }
+}
+
+@Composable
+fun DisplaySnackBar(
+    snackbarHostState: SnackbarHostState,
+    handleDatabaseActions: () -> Unit,
+    taskTitle: String,
+    action: Action
+) {
+    handleDatabaseActions()
+
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = action) {
+        if (action != Action.NO_ACTION) {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    message = "${action.name}: $taskTitle",
+                    actionLabel = "Ok"
+                )
+            }
+        }
     }
 }
