@@ -29,6 +29,7 @@ fun NavGraphBuilder.taskComposable(
         sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
+        // 코루틴으로 할일들을 렌더링한다.
         LaunchedEffect(key1 = selectedTask) {
             if (selectedTask != null || taskId == -1) {
                 sharedViewModel.updateTaskFields(selectedTask = selectedTask)
