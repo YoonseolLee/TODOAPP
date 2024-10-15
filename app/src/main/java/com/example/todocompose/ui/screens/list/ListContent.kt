@@ -1,6 +1,5 @@
 package com.example.todocompose.ui.screens.list
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,15 +14,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -115,44 +114,47 @@ fun HandleListContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisplayTasks(
     tasks: List<ToDoTask>,
     onSwipeToDelete: (Action, ToDoTask) -> Unit,
     navigateToTaskScreen: (taskId: Int) -> Unit
 ) {
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
         items(
             items = tasks,
             key = { task -> task.id }
         ) { task ->
-            val dismissState = rememberDismissState(
+            val dismissState = rememberSwipeToDismissBoxState(
                 confirmValueChange = { dismissValue ->
-                    if (dismissValue == DismissValue.DismissedToStart) {
+                    if (dismissValue == SwipeToDismissBoxValue.EndToStart) {
                         onSwipeToDelete(Action.DELETE, task)
                         true
                     } else false
                 }
             )
 
-            val degrees by animateFloatAsState(
-                targetValue = if (dismissState.targetValue == DismissValue.Default) 0f else -45f
-            )
-
-            SwipeToDismiss(
+            SwipeToDismissBox(
                 state = dismissState,
-                background = { RedBackground(degrees = degrees) },
-                dismissContent = {
+                backgroundContent = {
+                    val degrees = if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0f else -45f
+                    RedBackground(degrees = degrees)
+                },
+                content = {
                     TaskItem(
                         toDoTask = task,
                         navigateToTaskScreen = navigateToTaskScreen
                     )
                 },
-                directions = setOf(DismissDirection.EndToStart)
+                enableDismissFromEndToStart = true
             )
         }
     }
 }
+
 
 @Composable
 fun RedBackground(degrees: Float) {
